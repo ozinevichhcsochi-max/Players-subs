@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Замены" />
+  <title>Футбольные замены</title>
+  <style>
+    :root{--bg:#08111f;--card:#111c2e;--muted:#8ea0b8;--text:#f6f8fb;--line:#24344b;--accent:#3b82f6;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--white:#fff}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#08111f,#0d1727 55%,#101827);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;min-height:100vh}
+    button,input,textarea{font:inherit} button{cursor:pointer}
+    .app{max-width:760px;margin:0 auto;min-height:100vh;padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 22px)}
+    header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.brand h1{font-size:22px;margin:0}.brand p{font-size:12px;color:var(--muted);margin:3px 0 0}
+    .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:#0a1424;border:1px solid var(--line);padding:6px;border-radius:16px;position:sticky;top:8px;z-index:30;backdrop-filter:blur(12px)}
+    .tab{border:0;border-radius:11px;padding:11px 8px;background:transparent;color:var(--muted);font-weight:700}.tab.active{background:var(--accent);color:#fff}
+    .screen{display:none;margin-top:14px}.screen.active{display:block}.card{background:rgba(17,28,46,.96);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 16px 40px rgba(0,0,0,.18)}
+    .card h2{font-size:17px;margin:0 0 10px}.hint{color:var(--muted);font-size:13px;line-height:1.45}.row{display:flex;gap:8px;align-items:center}.row.wrap{flex-wrap:wrap}.grow{flex:1}
+    input,textarea{width:100%;border:1px solid var(--line);background:#0a1424;color:#fff;border-radius:13px;padding:14px;outline:none}input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.16)}
+    .btn{border:0;border-radius:13px;padding:13px 15px;font-weight:800;background:#23324a;color:#fff}.btn.primary{background:var(--accent)}.btn.green{background:var(--green);color:#06130a}.btn.red{background:#4a2026;color:#ffb6bd}.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}.btn.small{padding:9px 11px;border-radius:10px;font-size:13px}
+    .player-form{display:grid;grid-template-columns:92px 1fr auto;gap:8px}.list{display:flex;flex-direction:column;gap:8px;margin-top:10px}.player{display:grid;grid-template-columns:50px 1fr auto;align-items:center;gap:8px;padding:10px;border-radius:13px;background:#0a1424;border:1px solid var(--line)}.num{font-weight:900;font-size:18px;text-align:center}.surname{font-weight:750}.status{font-size:11px;padding:5px 8px;border-radius:999px;white-space:nowrap}.status.field{background:rgba(34,197,94,.15);color:#7ef0a0}.status.bench{background:rgba(148,163,184,.15);color:#c7d1df}.status.out{background:rgba(239,68,68,.15);color:#ff9898}.status.none{background:rgba(245,158,11,.14);color:#ffd27a}
+    .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.setup-column{background:#0a1424;border:1px solid var(--line);border-radius:15px;padding:10px}.setup-column h3{font-size:14px;margin:0 0 8px}.pick{display:flex;align-items:center;gap:9px;padding:9px 5px;border-bottom:1px solid rgba(36,52,75,.6)}.pick:last-child{border-bottom:0}.pick input{width:22px;height:22px;accent-color:var(--accent)}
+    .match-top{display:grid;grid-template-columns:1fr auto;gap:8px}.search{font-size:20px;padding:17px 15px}.mic{width:58px;height:58px;border-radius:17px;border:0;background:var(--red);color:#fff;font-size:25px}.mic.listening{animation:pulse 1s infinite;background:#dc2626}@keyframes pulse{50%{transform:scale(1.06);box-shadow:0 0 0 12px rgba(239,68,68,.12)}}
+    .suggestions{margin-top:8px;display:flex;flex-direction:column;gap:7px}.suggestion{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px;background:#0a1424;border:1px solid var(--line);border-radius:12px}.suggestion:active{transform:scale(.99)}
+    .selected{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.chip{display:flex;align-items:center;gap:7px;background:#1a2940;border:1px solid var(--line);border-radius:999px;padding:8px 11px;font-weight:750}.chip button{border:0;background:transparent;color:#c7d1df;font-size:16px;padding:0}
+    .result{display:flex;flex-direction:column;gap:10px;margin-top:12px}.pair{background:linear-gradient(135deg,#14243c,#0d1a2c);border:1px solid #31506f;border-radius:18px;padding:16px}.pair-main{display:flex;justify-content:center;align-items:center;gap:14px;font-size:34px;font-weight:950;letter-spacing:.5px}.pair-names{display:flex;justify-content:center;gap:10px;color:var(--muted);margin-top:5px;font-size:13px}.down{color:#ff6b6b}.up{color:#59e889}
+    .waiting{padding:12px;border-radius:13px;background:rgba(245,158,11,.1);color:#ffd27a;border:1px solid rgba(245,158,11,.28);font-size:13px}.last{font-size:24px;font-weight:900;text-align:center;padding:14px;border-radius:15px;background:#0a1424}.empty{text-align:center;color:var(--muted);padding:22px 8px}.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 22px);transform:translateX(-50%) translateY(120px);background:#fff;color:#111827;padding:11px 15px;border-radius:999px;font-weight:800;z-index:100;transition:.25s;max-width:90%;text-align:center}.toast.show{transform:translateX(-50%) translateY(0)}
+    .fullscreen-result{position:fixed;inset:0;background:#050a12;z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px}.fullscreen-result.show{display:flex}.fullscreen-result .big{font-size:min(28vw,170px);font-weight:1000;line-height:.9}.fullscreen-result .label{color:var(--muted);font-size:18px;margin:10px}.fullscreen-result .close{position:absolute;top:calc(env(safe-area-inset-top) + 18px);right:18px}
+    @media(max-width:520px){.setup-grid{grid-template-columns:1fr}.player-form{grid-template-columns:78px 1fr}.player-form button{grid-column:1/-1}.pair-main{font-size:31px}.brand p{display:none}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header><div class="brand"><h1>Футбольные замены</h1><p>Фамилии → готовые номера замен</p></div><button class="btn ghost small" id="resetAll">Сброс</button></header>
+  <nav class="tabs">
+    <button class="tab active" data-screen="players">Игроки</button>
+    <button class="tab" data-screen="setup">Состав</button>
+    <button class="tab" data-screen="match">Матч</button>
+  </nav>
+
+  <section class="screen active" id="players">
+    <div class="card"><h2>База команды</h2><p class="hint">Один раз внесите всех игроков с номерами. База сохранится на этом устройстве.</p>
+      <div class="player-form"><input id="playerNumber" inputmode="numeric" placeholder="№"><input id="playerSurname" placeholder="Фамилия"><button class="btn primary" id="addPlayer">Добавить</button></div>
+      <div class="row wrap" style="margin-top:10px"><button class="btn ghost small" id="loadDemo">Тестовый состав</button><button class="btn ghost small" id="clearPlayers">Очистить базу</button></div>
+    </div>
+    <div class="card"><h2>Все игроки <span id="playersCount" class="hint"></span></h2><div id="playersList" class="list"></div></div>
+  </section>
+
+  <section class="screen" id="setup">
+    <div class="card"><h2>Состав на матч</h2><p class="hint">Отметьте стартовых и запасных. Игрок не может быть одновременно в двух списках.</p>
+      <div class="setup-grid"><div class="setup-column"><h3>🟢 Стартовый состав <span id="startersCount"></span></h3><div id="startersList"></div></div><div class="setup-column"><h3>⚪ Запасные <span id="benchCount"></span></h3><div id="benchList"></div></div></div>
+      <div class="row wrap" style="margin-top:12px"><button class="btn green grow" id="startMatch">Начать матч</button><button class="btn ghost" id="loadLastLineup">Прошлый состав</button></div>
+    </div>
+  </section>
+
+  <section class="screen" id="match">
+    <div class="card"><div class="match-top"><input class="search" id="searchInput" autocomplete="off" autocapitalize="words" placeholder="Введите фамилию…"><button class="mic" id="micBtn" aria-label="Голосовой ввод">🎤</button></div><div id="speechText" class="hint" style="margin-top:7px"></div><div id="suggestions" class="suggestions"></div><div id="selectedPlayers" class="selected"></div></div>
+    <div class="card"><h2>Номера замен</h2><div id="results" class="result"></div><div id="waiting" class="waiting" style="display:none"></div><div class="row wrap" style="margin-top:12px"><button class="btn primary grow" id="copyResults">Скопировать номера</button><button class="btn ghost" id="clearCurrent">Очистить ввод</button></div></div>
+    <div class="card"><h2>Последняя подтверждённая замена</h2><div id="lastSub" class="empty">Пока нет</div><div class="row wrap" style="margin-top:10px"><button class="btn ghost grow" id="undoLast">↩ Отменить последнюю</button><button class="btn ghost" id="showBig">На весь экран</button></div></div>
+    <div class="card"><h2>Текущий статус</h2><div id="currentStatus" class="list"></div></div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+<div class="fullscreen-result" id="fullScreen"><button class="btn ghost close" id="closeFull">Закрыть</button><div class="label">УХОДИТ</div><div class="big down" id="bigOut">—</div><div class="label">ВЫХОДИТ</div><div class="big up" id="bigIn">—</div></div>
+<script>
+(() => {
+  const KEY='footballSubsV2';
+  const defaultState={players:[],starters:[],bench:[],statuses:{},selected:[],pairs:[],lastSub:null,lastLineup:null};
+  let state=load();
+  const $=id=>document.getElementById(id);
+  function load(){try{return {...defaultState,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{return structuredClone(defaultState)}}
+  function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+  function norm(s){return String(s||'').toLowerCase().replace(/ё/g,'е').replace(/[^a-zа-я0-9]/gi,'').trim()}
+  function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),1800)}
+  function playerById(id){return state.players.find(p=>p.id===id)}
+  function statusLabel(s){return s==='field'?'На поле':s==='bench'?'Запас':s==='out'?'Уже ушёл':'Не в заявке'}
+  function statusClass(s){return s==='field'?'field':s==='bench'?'bench':s==='out'?'out':'none'}
+  function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
+  function go(screen){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.screen===screen));document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===screen));if(screen==='match')setTimeout(()=>$('searchInput').focus(),100)}
+
+  function addPlayer(){const number=$('playerNumber').value.trim(),surname=$('playerSurname').value.trim().replace(/\s+/g,' ');if(!number||!surname)return toast('Введите номер и фамилию');if(state.players.some(p=>String(p.number)===number))return toast('Такой номер уже есть');if(state.players.some(p=>norm(p.surname)===norm(surname)))return toast('Такая фамилия уже есть');state.players.push({id:uid(),number:Number(number),surname});state.players.sort((a,b)=>a.number-b.number);$('playerNumber').value='';$('playerSurname').value='';save();renderAll();$('playerNumber').focus()}
+  function removePlayer(id){state.players=state.players.filter(p=>p.id!==id);state.starters=state.starters.filter(x=>x!==id);state.bench=state.bench.filter(x=>x!==id);delete state.statuses[id];state.selected=state.selected.filter(x=>x!==id);save();renderAll()}
+  function renderPlayers(){const root=$('playersList');$('playersCount').textContent=`(${state.players.length})`;root.innerHTML='';if(!state.players.length){root.innerHTML='<div class="empty">Игроков пока нет</div>';return}state.players.forEach(p=>{const d=document.createElement('div');d.className='player';d.innerHTML=`<div class="num">${p.number}</div><div class="surname">${p.surname}</div><button class="btn red small">Удалить</button>`;d.querySelector('button').onclick=()=>removePlayer(p.id);root.appendChild(d)})}
+  function renderSetup(){const s=$('startersList'),b=$('benchList');s.innerHTML='';b.innerHTML='';state.players.forEach(p=>{const mk=(type)=>{const row=document.createElement('label');row.className='pick';const checked=(type==='starters'?state.starters:state.bench).includes(p.id);row.innerHTML=`<input type="checkbox" ${checked?'checked':''}><span><b>№${p.number}</b> ${p.surname}</span>`;row.querySelector('input').onchange=e=>toggleLineup(p.id,type,e.target.checked);return row};s.appendChild(mk('starters'));b.appendChild(mk('bench'))});$('startersCount').textContent=`(${state.starters.length})`;$('benchCount').textContent=`(${state.bench.length})`}
+  function toggleLineup(id,type,on){const target=type==='starters'?'starters':'bench',other=type==='starters'?'bench':'starters';state[target]=state[target].filter(x=>x!==id);if(on){state[target].push(id);state[other]=state[other].filter(x=>x!==id)}save();renderSetup()}
+  function startMatch(){if(!state.starters.length||!state.bench.length)return toast('Выберите стартовых и запасных');state.statuses={};state.players.forEach(p=>state.statuses[p.id]='none');state.starters.forEach(id=>state.statuses[id]='field');state.bench.forEach(id=>state.statuses[id]='bench');state.lastLineup={starters:[...state.starters],bench:[...state.bench]};state.selected=[];state.pairs=[];state.lastSub=null;save();renderAll();go('match');toast('Матч готов')}
+  function loadLastLineup(){if(!state.lastLineup)return toast('Прошлого состава нет');state.starters=state.lastLineup.starters.filter(id=>playerById(id));state.bench=state.lastLineup.bench.filter(id=>playerById(id));save();renderSetup();toast('Прошлый состав загружен')}
+  function findMatches(q){const n=norm(q);if(!n)return[];return state.players.filter(p=>norm(p.surname).includes(n)&&['field','bench'].includes(state.statuses[p.id])).sort((a,b)=>{const aa=norm(a.surname).startsWith(n)?0:1,bb=norm(b.surname).startsWith(n)?0:1;return aa-bb||a.surname.localeCompare(b.surname,'ru')}).slice(0,8)}
+  function renderSuggestions(){const q=$('searchInput').value,root=$('suggestions');root.innerHTML='';findMatches(q).forEach(p=>{const d=document.createElement('button');d.className='suggestion';d.innerHTML=`<span><b>№${p.number}</b> ${p.surname}</span><span class="status ${statusClass(state.statuses[p.id])}">${statusLabel(state.statuses[p.id])}</span>`;d.onclick=()=>selectPlayer(p.id);root.appendChild(d)})}
+  function selectPlayer(id){if(state.selected.includes(id))return toast('Игрок уже выбран');const st=state.statuses[id];if(!['field','bench'].includes(st))return toast('Игрок недоступен для замены');state.selected.push(id);$('searchInput').value='';$('suggestions').innerHTML='';buildPairs();save();renderMatch();setTimeout(()=>$('searchInput').focus(),50)}
+  function buildPairs(){const fields=state.selected.filter(id=>state.statuses[id]==='field');const benches=state.selected.filter(id=>state.statuses[id]==='bench');state.pairs=[];const count=Math.min(fields.length,benches.length);for(let i=0;i<count;i++)state.pairs.push({out:fields[i],in:benches[i]});if(count){const used=new Set(state.pairs.flatMap(p=>[p.out,p.in]));state.selected=state.selected.filter(id=>!used.has(id));state.pairs.forEach(commitPair);state.pairs=[]}}
+  function commitPair(pair){const outP=playerById(pair.out),inP=playerById(pair.in);if(!outP||!inP)return;state.statuses[pair.out]='out';state.statuses[pair.in]='field';state.lastSub={...pair,at:Date.now()};toast(`${outP.number} → ${inP.number}`)}
+  function removeSelected(id){state.selected=state.selected.filter(x=>x!==id);save();renderMatch()}
+  function renderMatch(){renderSuggestions();const sel=$('selectedPlayers');sel.innerHTML='';state.selected.forEach(id=>{const p=playerById(id);if(!p)return;const c=document.createElement('div');c.className='chip';c.innerHTML=`№${p.number} ${p.surname} <button>×</button>`;c.querySelector('button').onclick=()=>removeSelected(id);sel.appendChild(c)});
+    const fields=state.selected.filter(id=>state.statuses[id]==='field').length,benches=state.selected.filter(id=>state.statuses[id]==='bench').length,w=$('waiting');if(state.selected.length){w.style.display='block';w.textContent=fields>benches?'Ожидаю игрока из запаса':benches>fields?'Ожидаю игрока с поля':'Ожидаю следующую пару'}else w.style.display='none';
+    const last=$('lastSub');if(state.lastSub){const o=playerById(state.lastSub.out),i=playerById(state.lastSub.in);last.className='last';last.innerHTML=`<span class="down">${o.number}</span> → <span class="up">${i.number}</span><div class="hint">${o.surname} → ${i.surname}</div>`}else{last.className='empty';last.textContent='Пока нет'}
+    const r=$('results');r.innerHTML='';if(state.lastSub){const o=playerById(state.lastSub.out),i=playerById(state.lastSub.in);const d=document.createElement('div');d.className='pair';d.innerHTML=`<div class="pair-main"><span class="down">${o.number}</span><span>→</span><span class="up">${i.number}</span></div><div class="pair-names"><span>${o.surname}</span><span>→</span><span>${i.surname}</span></div>`;r.appendChild(d)}else r.innerHTML='<div class="empty">Введите две фамилии — результат появится сразу</div>';
+    const cs=$('currentStatus');cs.innerHTML='';state.players.filter(p=>['field','bench','out'].includes(state.statuses[p.id])).sort((a,b)=>{const ord={field:0,bench:1,out:2};return ord[state.statuses[a.id]]-ord[state.statuses[b.id]]||a.number-b.number}).forEach(p=>{const d=document.createElement('div');d.className='player';d.innerHTML=`<div class="num">${p.number}</div><div class="surname">${p.surname}</div><span class="status ${statusClass(state.statuses[p.id])}">${statusLabel(state.statuses[p.id])}</span>`;cs.appendChild(d)})}
+  function undoLast(){if(!state.lastSub)return toast('Нечего отменять');state.statuses[state.lastSub.out]='field';state.statuses[state.lastSub.in]='bench';state.lastSub=null;save();renderMatch();toast('Последняя замена отменена')}
+  async function copyResults(){if(!state.lastSub)return toast('Нет результата');const o=playerById(state.lastSub.out),i=playerById(state.lastSub.in),text=`${o.number} → ${i.number}`;try{await navigator.clipboard.writeText(text);toast('Скопировано')}catch{prompt('Скопируйте:',text)}}
+  function voice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast('Голосовой ввод не поддерживается в этом браузере');const rec=new SR();rec.lang='ru-RU';rec.interimResults=false;rec.continuous=false;$('micBtn').classList.add('listening');$('speechText').textContent='Слушаю…';rec.onresult=e=>{const text=e.results[0][0].transcript;$('speechText').textContent=`Распознано: ${text}`;processSpeech(text)};rec.onerror=()=>toast('Не удалось распознать речь');rec.onend=()=>$('micBtn').classList.remove('listening');rec.start()}
+  function processSpeech(text){let cleaned=text.toLowerCase().replace(/вместо|уходит|выходит|замена|на|и/gi,' ');const tokens=cleaned.split(/[\s,.;:!?]+/).map(norm).filter(x=>x.length>=2);const picked=[];tokens.forEach(t=>{const matches=state.players.filter(p=>['field','bench'].includes(state.statuses[p.id])&&(norm(p.surname)===t||norm(p.surname).startsWith(t)));if(matches.length===1&&!picked.includes(matches[0].id))picked.push(matches[0].id)});if(!picked.length)return toast('Фамилии не распознаны');picked.forEach(id=>{if(!state.selected.includes(id))state.selected.push(id)});buildPairs();save();renderMatch()}
+  function renderAll(){renderPlayers();renderSetup();renderMatch()}
+
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>go(t.dataset.screen));$('addPlayer').onclick=addPlayer;$('playerSurname').onkeydown=e=>{if(e.key==='Enter')addPlayer()};$('playerNumber').onkeydown=e=>{if(e.key==='Enter')$('playerSurname').focus()};$('startMatch').onclick=startMatch;$('loadLastLineup').onclick=loadLastLineup;$('searchInput').oninput=renderSuggestions;$('searchInput').onkeydown=e=>{if(e.key==='Enter'){const m=findMatches($('searchInput').value);if(m.length===1)selectPlayer(m[0].id)}};$('micBtn').onclick=voice;$('undoLast').onclick=undoLast;$('copyResults').onclick=copyResults;$('clearCurrent').onclick=()=>{state.selected=[];save();renderMatch();$('searchInput').value='';$('searchInput').focus()};$('showBig').onclick=()=>{if(!state.lastSub)return toast('Нет замены');$('bigOut').textContent=playerById(state.lastSub.out).number;$('bigIn').textContent=playerById(state.lastSub.in).number;$('fullScreen').classList.add('show')};$('closeFull').onclick=()=>$('fullScreen').classList.remove('show');
+  $('loadDemo').onclick=()=>{state.players=[['1','Заболотный'],['2','Иванов'],['4','Сидоров'],['5','Смирнов'],['7','Кузнецов'],['8','Фёдоров'],['9','Орлов'],['10','Морозов'],['11','Волков'],['14','Макаров'],['17','Калинин'],['18','Петров'],['20','Захаров'],['23','Соколов'],['25','Попов'],['27','Лебедев']].map(([n,s])=>({id:uid(),number:Number(n),surname:s}));state.starters=state.players.slice(0,11).map(p=>p.id);state.bench=state.players.slice(11).map(p=>p.id);state.statuses={};state.selected=[];state.lastSub=null;save();renderAll();toast('Тестовый состав загружен')};
+  $('clearPlayers').onclick=()=>{if(confirm('Удалить всю базу игроков?')){state=structuredClone(defaultState);save();renderAll()}};$('resetAll').onclick=()=>{if(confirm('Полностью сбросить приложение?')){localStorage.removeItem(KEY);state=structuredClone(defaultState);renderAll();go('players')}};
+  renderAll();
+})();
+</script>
+</body>
+</html>
